@@ -32,7 +32,6 @@ def give_title_score(title, sig=sig):
 
     # Get the pairwsie similarity scores
     sig_scores = list(enumerate(sig[idx]))
-	
 
     # Sort the movies
     sig_scores = sorted(sig_scores, key=lambda x: x[1], reverse=True)
