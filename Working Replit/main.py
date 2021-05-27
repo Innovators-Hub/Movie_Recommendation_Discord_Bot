@@ -41,8 +41,8 @@ async def recommend_title(ctx, *args):
         sent = await ctx.send("**Is the movie you wanted in one of these?**\nIf yes copy paste and use the command with this again\n"+'\n'.join(probable_movie_list))
         emojis = ['1️⃣', '2️⃣', '3️⃣']
         msg =  await ctx.fetch_message(sent.id)
-    for emoji in emojis:
-        await msg.add_reaction(emoji)
+        for emoji in emojis[:len(probable_movie_list)]:
+            await msg.add_reaction(emoji)
     else:
         recommended_movies = overview_recommend.give_only_title(movie_name)
         
@@ -64,8 +64,8 @@ async def rt(ctx, *args):
         sent = await ctx.send("**Is the movie you wanted in one of these?**\nIf yes copy paste and use the command with this again\n"+'\n'.join(probable_movie_list))
         emojis = ['1️⃣', '2️⃣', '3️⃣']
         msg =  await ctx.fetch_message(sent.id)
-    for emoji in emojis:
-        await msg.add_reaction(emoji)
+        for emoji in emojis[:len(probable_movie_list)]:
+            await msg.add_reaction(emoji)
     else:
         recommended_movies = overview_recommend.give_title_score(movie_name)
         print('\n'.join(recommended_movies))
@@ -90,7 +90,7 @@ async def rk(ctx,*args):
         sent = await ctx.send("**Is the movie you wanted in one of these?**\nIf yes copy paste and use the command with this again\n"+'\n'.join(probable_movie_list))
         emojis = ['1️⃣', '2️⃣', '3️⃣']
         msg =  await ctx.fetch_message(sent.id)
-        for emoji in emojis:
+        for emoji in emojis[:len(probable_movie_list)]:
             await msg.add_reaction(emoji)
 
     else:
@@ -127,7 +127,7 @@ async def recommend_KNN(ctx,*args):
         sent = await ctx.send("**Is the movie you wanted in one of these?**\nIf yes copy paste and use the command with this again\n"+'\n'.join(probable_movie_list))
         emojis = ['1️⃣', '2️⃣', '3️⃣']
         msg =  await ctx.fetch_message(sent.id)
-        for emoji in emojis:
+        for emoji in emojis[:len(probable_movie_list)]:
             await msg.add_reaction(emoji)
 
     else:
