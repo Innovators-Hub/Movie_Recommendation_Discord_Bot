@@ -10,6 +10,9 @@ knn_recommendations=json.load(open('KNN_recommendation.json'))
 
 movie_list = pd.read_csv("preprocessed.csv")
 movie_titles = movie_list['original_title'].tolist()
+
+movie_genre_based = pd.read_csv("first_timer_score.csv")
+
 bot = commands.Bot(
     command_prefix="!",  # Change to desired prefix
     case_insensitive=True  # Commands aren't case-sensitive
@@ -20,6 +23,40 @@ async def on_ready():  # When the bot is ready
     print("I'm in")
     print(bot.user)  # Prints the bot's username and identifier
 
+@bot.command()
+async def recommend_genre(ctx,*genre):
+	if len(genre) == 1:
+		if  genre[0] not in movie_genre_based.columns:
+			probable_genres = difflib.get_close_matches(genre[0],movie_genre_based.columns)
+			genre = probable_genres[0]
+		else:
+			genre = genre[0]
+		try:
+			await ctx.send('\n'.join(movie_genre_based[genre].to_list()))
+		except:
+			await ctx.send("**Genre not found**\nTry these genres\n"'\n'.join(movie_genre_based.columns[2:].to_list()))
+	else:
+		return_message = "```The format of the command is\n!recommend_genre <genre_name>"
+		await ctx.send(return_message)
+	
+@bot.command()
+async def rg(ctx,*genre):
+	if len(genre) == 1:
+		if  genre[0] not in movie_genre_based.columns:
+			probable_genres = difflib.get_close_matches(genre[0],movie_genre_based.columns)
+			try:
+				genre = probable_genres[0]
+			except:
+				genre = '\0'
+		else:
+			genre = genre[0]
+		try:
+			await ctx.send('\n'.join(movie_genre_based[genre].to_list()))
+		except:
+			await ctx.send("**Genre not found**\nTry these genres\n"+'\n'.join(movie_genre_based.columns[2:].to_list()))
+	else:
+		return_message = "```The format of the command is\n!recommend_genre <genre_name>"
+		await ctx.send(return_message)
 
 @bot.command()
 async def recommend_title(ctx, *args):
@@ -41,8 +78,8 @@ async def recommend_title(ctx, *args):
         sent = await ctx.send("**Is the movie you wanted in one of these?**\nIf yes copy paste and use the command with this again\n"+'\n'.join(probable_movie_list))
         emojis = ['1️⃣', '2️⃣', '3️⃣']
         msg =  await ctx.fetch_message(sent.id)
-        for emoji in emojis[:len(probable_movie_list)]:
-            await msg.add_reaction(emoji)
+    for emoji in emojis[:len(probable_movie_list)]:
+        await msg.add_reaction(emoji)
     else:
         recommended_movies = overview_recommend.give_only_title(movie_name)
         
@@ -64,8 +101,8 @@ async def rt(ctx, *args):
         sent = await ctx.send("**Is the movie you wanted in one of these?**\nIf yes copy paste and use the command with this again\n"+'\n'.join(probable_movie_list))
         emojis = ['1️⃣', '2️⃣', '3️⃣']
         msg =  await ctx.fetch_message(sent.id)
-        for emoji in emojis[:len(probable_movie_list)]:
-            await msg.add_reaction(emoji)
+    for emoji in emojis[:len(probable_movie_list)]:
+        await msg.add_reaction(emoji)
     else:
         recommended_movies = overview_recommend.give_title_score(movie_name)
         print('\n'.join(recommended_movies))
@@ -159,15 +196,10 @@ async def on_reaction_add(reaction,user):
     global method
     if user == bot.user:
         return
-
-    print(reaction.message.content)
-    print(user)
-    print(reaction.emoji)
-
     message1=reaction.message.content
 
     message=message1.split('\n')
-    print(message)
+	
     if(message[0]=='**Is the movie you wanted in one of these?**'):
         if str(reaction.emoji) in ['1️⃣', '2️⃣', '3️⃣']:
             if str(reaction.emoji) == '1️⃣':
