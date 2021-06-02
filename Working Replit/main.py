@@ -25,23 +25,9 @@ async def on_ready():  # When the bot is ready
 
 @bot.command()
 async def recommend_genre(ctx,*genre):
-	if len(genre) == 1:
-		if  genre[0] not in movie_genre_based.columns:
-			probable_genres = difflib.get_close_matches(genre[0],movie_genre_based.columns)
-			genre = probable_genres[0]
-		else:
-			genre = genre[0]
-		try:
-			await ctx.send('\n'.join(movie_genre_based[genre].to_list()))
-		except:
-			await ctx.send("**Genre not found**\nTry these genres\n"'\n'.join(movie_genre_based.columns[2:].to_list()))
-	else:
-		return_message = "```The format of the command is\n!recommend_genre <genre_name>"
-		await ctx.send(return_message)
-	
-@bot.command()
-async def rg(ctx,*genre):
-	if len(genre) == 1:
+	exception = difflib.get_close_matches(' '.join(genre),["Science Fiction","TV Movie"])
+
+	if len(genre) == 1 or len(exception) :
 		if  genre[0] not in movie_genre_based.columns:
 			probable_genres = difflib.get_close_matches(genre[0],movie_genre_based.columns)
 			try:
@@ -50,12 +36,47 @@ async def rg(ctx,*genre):
 				genre = '\0'
 		else:
 			genre = genre[0]
+		if len(exception):
+			genre = exception[0]
 		try:
-			await ctx.send('\n'.join(movie_genre_based[genre].to_list()))
+			if genre == "TV Movie":
+				l = movie_genre_based[genre].to_list()[:-2]
+				await ctx.send('\n'.join(l))
+			else:
+				await ctx.send('\n'.join(movie_genre_based[genre].to_list()))
 		except:
-			await ctx.send("**Genre not found**\nTry these genres\n"+'\n'.join(movie_genre_based.columns[2:].to_list()))
+			await ctx.send("**Genre not found**\nTry these genres\n```"+'\n'.join(movie_genre_based.columns[2:].to_list())+'```')
+		
 	else:
-		return_message = "```The format of the command is\n!recommend_genre <genre_name>"
+		return_message = "```The format of the command is\n!rg <genre_name>```"
+		await ctx.send(return_message)
+
+	
+@bot.command()
+async def rg(ctx,*genre):
+	exception = difflib.get_close_matches(' '.join(genre),["Science Fiction","TV Movie"])
+	if len(genre) == 1 or len(exception):
+		if  genre[0] not in movie_genre_based.columns:
+			probable_genres = difflib.get_close_matches(genre[0],movie_genre_based.columns)
+			try:
+				genre = probable_genres[0]
+			except:
+				genre = '\0'
+		else:
+			genre = genre[0]
+		if len(exception):
+			genre = exception[0]
+		try:
+			if genre == "TV Movie":
+				l = movie_genre_based[genre].to_list()[:-2]
+				await ctx.send('\n'.join(l))
+			else:
+				await ctx.send('\n'.join(movie_genre_based[genre].to_list()))
+		except:
+			await ctx.send("**Genre not found**\nTry these genres\n```"+'\n'.join(movie_genre_based.columns[2:].to_list())+'```')
+		
+	else:
+		return_message = "```The format of the command is\n!rg <genre_name>```"
 		await ctx.send(return_message)
 
 @bot.command()
